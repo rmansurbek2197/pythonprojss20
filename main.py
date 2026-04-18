@@ -1,25 +1,61 @@
-import logging
-from logging.handlers import RotatingFileHandler
+class Sonlar:
+    def __init__(self):
+        self.sonlar = []
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+    def son_kirit(self):
+        while True:
+            son = input("Son kiriting (quitga yozilsa to'xtaydi): ")
+            if son.lower() == "quit":
+                break
+            try:
+                self.sonlar.append(int(son))
+            except ValueError:
+                print("Iltimos son kiriting!")
 
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    def faylga_yoz(self):
+        with open("sonlar.txt", "w") as f:
+            for son in self.sonlar:
+                f.write(str(son) + "\n")
 
-file_handler = RotatingFileHandler('log.txt', maxBytes=1024*1024*10, backupCount=5)
-file_handler.setLevel(logging.DEBUG)
-file_handler.setFormatter(formatter)
+    def fayldan_oq(self):
+        try:
+            with open("sonlar.txt", "r") as f:
+                for line in f:
+                    print(line.strip())
+        except FileNotFoundError:
+            print("Fayl topilmadi")
 
-logger.addHandler(file_handler)
+    def analiz(self):
+        if not self.sonlar:
+            print("Sonlar yo'q")
+            return
+        max_son = max(self.sonlar)
+        min_son = min(self.sonlar)
+        o_r = sum(self.sonlar) / len(self.sonlar)
+        print(f"Max son: {max_son}")
+        print(f"Min son: {min_son}")
+        print(f"O'rtacha: {o_r}")
 
-def main():
-    logger.debug('Dastur ishga tushdi')
-    try:
-        x = 5 / 0
-    except ZeroDivisionError:
-        logger.error('Nolga bo\'lish xatosi')
-    logger.info('Dastur tugadi')
+def asosiy():
+    sonlar = Sonlar()
+    while True:
+        print("\n1. Son kiriting")
+        print("2. Faylga yoz")
+        print("3. Fayldan o'q")
+        print("4. Analiz")
+        print("5. Chiqish")
+        tanlov = input("Tanlov: ")
+        if tanlov == "1":
+            sonlar.son_kirit()
+        elif tanlov == "2":
+            sonlar.faylga_yoz()
+        elif tanlov == "3":
+            sonlar.fayldan_oq()
+        elif tanlov == "4":
+            sonlar.analiz()
+        elif tanlov == "5":
+            break
+        else:
+            print("Tanlovda xatolik")
 
-if __name__ == '__main__':
-    main()
-    logger.critical('Dastur tugadi')
+asosiy()
